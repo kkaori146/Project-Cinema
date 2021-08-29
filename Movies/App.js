@@ -1,7 +1,9 @@
-import React, {useState, useEffect} from 'react';
-import { SafeAreaView, Text, Button, FlatList, Image, View, StyleSheet } from 'react-native';
+import React, {useState, useEffect } from 'react';
+import { SafeAreaView, Text, Button, FlatList, Image, View, StyleSheet, ActivityIndicator } from 'react-native';
 
 const App = () => {
+
+  const [loading, setLoading] = useState(false);
 
   const [movies, setMovies] = useState([]);
 
@@ -17,22 +19,33 @@ const App = () => {
   return (
     <SafeAreaView style={styles.container}>
      <Button title="Loading the movies" onPress={handleLoadButton}/>
-     <Text style={styles.totalMoviesText}>Total of Movies: {movies.length}</Text>
-     <FlatList
-     style={styles.list}
-      data={movies}
-      renderItem={({item})=> (
-        <View style={styles.movieItem}>
-          <Image 
-          source={{uri: item.avatar}} 
-          style={styles.movieImage}
-          resizeMode="contain"
-          />
-          <Text style={styles.movieTitle}>{item.titulo}</Text>
+      {loading &&
+        <View style={styles.loadingArea}>
+          <ActivityIndicator size="large" color="#FFF" />
+          <Text style={styles.loadingText}>Loading...</Text>
         </View>
-      )}
-      keyExtractor={item => item.titulo}
-     />
+      }
+     {!loading && 
+     <>
+      <Text style={styles.totalMoviesText}>Total of Movies: {movies.length}</Text>
+     <FlatList
+        style={styles.list}
+          data={movies}
+          renderItem={({item})=> (
+            <View style={styles.movieItem}>
+              <Image 
+              source={{uri: item.avatar}} 
+              style={styles.movieImage}
+              resizeMode="contain"
+              />
+              <Text style={styles.movieTitle}>{item.titulo}</Text>
+            </View>
+          )}
+          keyExtractor={item => item.titulo}
+        />
+     </>
+     }
+     
     </SafeAreaView>
   );
 }
@@ -41,6 +54,14 @@ const styles = StyleSheet.create({
   container:{
     flex:1,
     backgroundColor: '#333'
+  },
+  loadingArea:{
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  loadingText:{
+    color: '#FFF'
   },
   totalMoviesText:{
     color: '#FFF',
